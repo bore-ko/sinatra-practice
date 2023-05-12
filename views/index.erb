@@ -3,7 +3,7 @@
 <% if @memos.any? %>
   <% @memos.each do |memo| %>
     <li><a href="/memos/:<%= memo[0] %>"><%= memo[1] %></a></li>
-    <% end %>
+  <% end %>
 <% else %>
   <p>メモを追加してみよう！</p>
 <% end %>
