@@ -1,11 +1,7 @@
-<% @memos.each do |memo| %>
-  <% if ( ":"+ "#{memo[0]}") == @id %>
-    <h2>タイトル</h2>
-    <p class="display_title"><%= memo[1] %></p>
-    <h3>内容</h3>
-    <p class="display_content"><%= memo[2] %></p>
-  <% end %>
-<% end %>
+<h2>タイトル</h2>
+  <p class="display_title"><%= h(@memos[1]) %></p>
+  <h3>内容</h3>
+  <p class="display_content"><%= h(@memos[2]) %></p>
 
 <a href='/memos/<%= @id %>/edit'><button class="warp_change_button">変更</button></a>
 

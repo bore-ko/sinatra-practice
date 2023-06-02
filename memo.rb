@@ -6,11 +6,14 @@ require 'securerandom'
 require 'csv'
 require 'erb'
 
-include ERB::Util
+helpers do
+  def h(text)
+    ERB::Util.html_escape(text)
+  end
+end
 
 get '/' do
-  @memos = CSV.read('memo.csv')
-  @memos.shift
+  @memos = CSV.read('memo.csv', headers: true)
   erb :index
 end
 
@@ -19,45 +22,34 @@ get '/memos/new' do
 end
 
 post '/memos' do
-  if File.empty?('memo.csv')
-    CSV.open('memo.csv', 'w') do |csv|
-      csv << %w[id title content]
-      csv << [SecureRandom.uuid, html_escape(params[:title].to_s), html_escape(params[:content].to_s)]
-    end
-  else
-    CSV.open('memo.csv', 'a') do |csv|
-      csv << [SecureRandom.uuid, html_escape(params[:title].to_s), html_escape(params[:content].to_s)]
-    end
+  CSV.open('memo.csv', 'a') do |csv|
+    csv << %w[id title content] if File.empty?('memo.csv')
+    csv << [SecureRandom.uuid, params[:title], params[:content]]
   end
   redirect '/'
 end
 
 get '/memos/:id' do
   @id = params[:id]
-  @memos = CSV.read('memo.csv')
+  CSV.read('memo.csv').each do |memo|
+    @memos = memo if @id == ":#{memo[0]}"
+  end
   erb :detail
 end
 
 get '/memos/:id/edit' do
   @id = params[:id]
-  memos = CSV.read('memo.csv')
-  memos.each do |memo|
-    if params[:id] == ":#{memo[0]}"
-      @title = memo[1]
-      @content = memo[2]
-    end
+  CSV.read('memo.csv').each do |memo|
+    @memos = memo if @id == ":#{memo[0]}"
   end
   erb :edit
 end
 
 patch '/memos/:id' do
   memos = CSV.read('memo.csv')
-  memos.each do |memo|
-    if params[:id] == ":#{memo[0]}"
-      memo[1] = html_escape(params[:title].to_s)
-      memo[2] = html_escape(params[:content].to_s)
-    end
-  end
+  memo_lines = memos.find { |memo| params[:id] == ":#{memo[0]}" }
+  memo_lines[1] = params[:title]
+  memo_lines[2] = params[:content]
   CSV.open('memo.csv', 'w') do |csv|
     memos.each do |memo|
       csv << memo
@@ -68,9 +60,7 @@ end
 
 delete '/memos/:id' do
   memos = CSV.read('memo.csv')
-  memos.each do |memo|
-    memos.delete(memo) if params[:id] == ":#{memo[0]}"
-  end
+  memos.delete_if { |memo| params[:id] == ":#{memo[0]}" }
   CSV.open('memo.csv', 'w') do |csv|
     memos.each do |memo|
       csv << memo
