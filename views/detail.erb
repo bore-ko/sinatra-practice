@@ -3,9 +3,9 @@
   <h3>内容</h3>
   <p class="display_content"><%= h(@memos[2]) %></p>
 
-<a href='/memos/<%= @id %>/edit'><button class="warp_change_button">変更</button></a>
+<a href='/memos/:<%= @memos[0] %>/edit'><button class="warp_change_button">変更</button></a>
 
-<form action='/memos/<%= @id %>' method="post">
+<form action='/memos/:<%= @memos[0] %>' method="post">
 <input type='hidden' name="_method" value="delete">
 <input class="delete_button" type='submit' value='削除'>
 </form>

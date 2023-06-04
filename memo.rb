@@ -30,17 +30,15 @@ post '/memos' do
 end
 
 get '/memos/:id' do
-  @id = params[:id]
   CSV.read('memo.csv').each do |memo|
-    @memos = memo if @id == ":#{memo[0]}"
+    @memos = memo if params[:id] == ":#{memo[0]}"
   end
   erb :detail
 end
 
 get '/memos/:id/edit' do
-  @id = params[:id]
   CSV.read('memo.csv').each do |memo|
-    @memos = memo if @id == ":#{memo[0]}"
+    @memos = memo if params[:id] == ":#{memo[0]}"
   end
   erb :edit
 end
