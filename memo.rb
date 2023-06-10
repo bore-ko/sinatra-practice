@@ -10,6 +10,10 @@ helpers do
   def h(text)
     ERB::Util.html_escape(text)
   end
+
+  def memo_lines
+    @memos = CSV.read('memo.csv').find { |memo| memo if params[:id] == ":#{memo[0]}" }
+  end
 end
 
 get '/' do
@@ -30,24 +34,21 @@ post '/memos' do
 end
 
 get '/memos/:id' do
-  CSV.read('memo.csv').each do |memo|
-    @memos = memo if params[:id] == ":#{memo[0]}"
-  end
+  memo_lines
   erb :detail
 end
 
 get '/memos/:id/edit' do
-  CSV.read('memo.csv').each do |memo|
-    @memos = memo if params[:id] == ":#{memo[0]}"
-  end
+  memo_lines
   erb :edit
 end
 
 patch '/memos/:id' do
   memos = CSV.read('memo.csv')
-  memo_lines = memos.find { |memo| params[:id] == ":#{memo[0]}" }
-  memo_lines[1] = params[:title]
-  memo_lines[2] = params[:content]
+  memo_lines
+  lines = memos.find { |memo| memo == @memos }
+  lines[1] = params[:title]
+  lines[2] = params[:content]
   CSV.open('memo.csv', 'w') do |csv|
     memos.each do |memo|
       csv << memo
@@ -58,7 +59,8 @@ end
 
 delete '/memos/:id' do
   memos = CSV.read('memo.csv')
-  memos.delete_if { |memo| params[:id] == ":#{memo[0]}" }
+  memo_lines
+  memos.delete_if { |memo| memo == @memos }
   CSV.open('memo.csv', 'w') do |csv|
     memos.each do |memo|
       csv << memo
