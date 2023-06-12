@@ -1,0 +1,8 @@
+<form action='/memos/:<%= @memos[0] %>' method="post">
+  <h2>タイトル</h2>
+  <p><input class="title" type="text" name="title" value="<%= h(@memos[1]) %>"></p>
+  <h3>内容</h3>
+  <p><textarea type="text" name="content"><%= h(@memos[2]) %></textarea></p>
+  <input type='hidden' name="_method" value="patch">
+  <input class="change_button" type='submit' value='変更'>
+</form>

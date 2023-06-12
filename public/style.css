@@ -1,0 +1,85 @@
+body {
+  margin: 40px;
+}
+
+h1 {
+  margin-bottom: 8px;
+  color:#4d3cb9; 
+}
+
+li {
+  font-size: 18px;
+  margin-bottom: 10px;
+}
+
+button {
+  margin-left: 230px;
+  width: 7%;
+  height: 35px;
+}
+
+a {
+  text-decoration: none;  
+  color: black;
+}
+
+h2{
+  font-size: 15px;
+  font-weight: normal;
+  margin-top: 25px;
+  margin-bottom: 5px;
+}
+
+h3 {
+  font-size: 15px;
+  font-weight: normal;
+  margin-bottom: 5px;
+}
+
+p {
+  margin-top: 5px;
+}
+
+input {
+  width: 400px;
+}
+
+.save_button, .warp_change_button, .delete_button, .change_button {
+  margin-top: 22px;
+  width: 7%;
+  height: 35px;
+  margin-left: 140px;
+}
+
+.warp_change_button {
+  float: left;
+  margin-left: 70px; 
+}
+
+.delete_button {
+  float: clear;
+  margin-left: 60px
+}
+
+.title, .content {
+  width: 400px;
+  padding: 7px;
+  border: solid 1px gray;
+}
+
+.display_title, .display_content {
+  width: 400px;
+  padding: 2px;
+  border: solid 1px gray;
+  background-color: #eeedf3; 
+}
+
+.content, .display_content  {
+  height: 150px;
+}
+
+textarea {
+  width: 413px;
+  height: 130px;
+  font: -webkit-control;
+}
