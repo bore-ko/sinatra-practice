@@ -5,6 +5,7 @@ require 'sinatra/reloader'
 require 'securerandom'
 require 'csv'
 require 'erb'
+require 'pg'
 
 helpers do
   def h(text)
@@ -12,12 +13,17 @@ helpers do
   end
 
   def memo_lines
-    @memos = CSV.read('memo.csv').find { |memo| memo if params[:id] == ":#{memo[0]}" }
+    id = params[:id].delete(':')
+    conn = PG.connect(dbname: 'memos')
+    @memos = conn.exec('SELECT * FROM memos WHERE id = $1;', [id])
+    conn.finish
   end
 end
 
 get '/' do
-  @memos = CSV.read('memo.csv', headers: true)
+  conn = PG.connect(dbname: 'memos')
+  @memos = conn.exec('SELECT * FROM memos;')
+  conn.finish
   erb :index
 end
 
@@ -26,10 +32,11 @@ get '/memos/new' do
 end
 
 post '/memos' do
-  CSV.open('memo.csv', 'a') do |csv|
-    csv << %w[id title content] if File.empty?('memo.csv')
-    csv << [SecureRandom.uuid, params[:title], params[:content]]
-  end
+  title = params[:title]
+  content = params[:content]
+  conn = PG.connect(dbname: 'memos')
+  conn.exec('INSERT INTO memos(title, content) VALUES ($1, $2);', [title, content])
+  conn.finish
   redirect '/'
 end
 
@@ -44,27 +51,19 @@ get '/memos/:id/edit' do
 end
 
 patch '/memos/:id' do
-  memos = CSV.read('memo.csv')
-  memo_lines
-  lines = memos.find { |memo| memo == @memos }
-  lines[1] = params[:title]
-  lines[2] = params[:content]
-  CSV.open('memo.csv', 'w') do |csv|
-    memos.each do |memo|
-      csv << memo
-    end
-  end
+  id = params[:id].delete(':')
+  title = params[:title]
+  content = params[:content]
+  conn = PG.connect(dbname: 'memos')
+  conn.exec('UPDATE memos SET title=$1, content=$2 WHERE id=$3;', [title, content, id])
+  conn.finish
   redirect '/'
 end
 
 delete '/memos/:id' do
-  memos = CSV.read('memo.csv')
-  memo_lines
-  memos.delete_if { |memo| memo == @memos }
-  CSV.open('memo.csv', 'w') do |csv|
-    memos.each do |memo|
-      csv << memo
-    end
-  end
+  id = params[:id].delete(':')
+  conn = PG.connect(dbname: 'memos')
+  conn.exec('DELETE FROM memos WHERE id=$1;', [id])
+  conn.finish
   redirect '/'
 end

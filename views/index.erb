@@ -2,7 +2,7 @@
 <ul>
 <% if @memos.any? %>
   <% @memos.each do |memo| %>
-    <li><a href="/memos/:<%= h(memo[0]) %>"><%= h(memo[1]) %></a></li>
+    <li><a href="/memos/:<%= h(memo["id"]) %>"><%= h(memo["title"]) %></a></li>
   <% end %>
 <% else %>
   <p>メモを追加してみよう！</p>

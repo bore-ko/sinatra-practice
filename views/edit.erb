@@ -1,8 +1,10 @@
-<form action='/memos/:<%= @memos[0] %>' method="post">
-  <h2>タイトル</h2>
-  <p><input class="title" type="text" name="title" value="<%= h(@memos[1]) %>"></p>
-  <h3>内容</h3>
-  <p><textarea type="text" name="content"><%= h(@memos[2]) %></textarea></p>
-  <input type='hidden' name="_method" value="patch">
-  <input class="change_button" type='submit' value='変更'>
-</form>
+<% @memos.each do |memo| %>
+  <form action='/memos/:<%= memo["id"] %>' method="post">
+    <h2>タイトル</h2>
+    <p><input class="title" type="text" name="title" value="<%= h(memo["title"]) %>"></p>
+    <h3>内容</h3>
+    <p><textarea type="text" name="content"><%= h(memo["content"]) %></textarea></p>
+    <input type='hidden' name="_method" value="patch">
+    <input class="change_button" type='submit' value='変更'>
+  </form>
+<% end %>
